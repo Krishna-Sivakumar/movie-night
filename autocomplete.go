@@ -96,10 +96,8 @@ func main() {
 	}
 
 	redisAddr, redisPort, dbIndex := redisConfig.Get("servers.redis_address").(string), redisConfig.Get("servers.redis_port").(int64), redisConfig.Get("servers.redis_autcomplete_index").(int64)
-	fmt.Println(redisAddr, redisPort, dbIndex)
 
 	serverAddr, serverPort := redisConfig.Get("servers.server_address").(string), redisConfig.Get("servers.autocomplete_server_port").(int64)
-	fmt.Println(serverAddr, serverPort)
 
 	rdb = redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", redisAddr, redisPort),
