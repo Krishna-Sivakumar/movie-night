@@ -4,22 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/pelletier/go-toml"
 )
 
 var arr []int = []int{1, 2, 3, 4, 5}
 var ctx = context.Background()
 var i = 0
 
-var rdb *redis.Client = redis.NewClient(&redis.Options{
-	Addr: "127.0.0.1:6000",
-	DB:   1,
-})
+var rdb *redis.Client
 
 type myJSON struct {
 	Array []string
@@ -86,6 +85,27 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	redisConfigFile, err := ioutil.ReadFile("config.toml")
+	if err != nil {
+		panic(err)
+	}
+
+	redisConfig, err := toml.Load(string(redisConfigFile))
+	if err != nil {
+		panic(err)
+	}
+
+	redisAddr, redisPort, dbIndex := redisConfig.Get("servers.redis_address").(string), redisConfig.Get("servers.redis_port").(int64), redisConfig.Get("servers.redis_autcomplete_index").(int64)
+	fmt.Println(redisAddr, redisPort, dbIndex)
+
+	serverAddr, serverPort := redisConfig.Get("servers.server_address").(string), redisConfig.Get("servers.autocomplete_server_port").(int64)
+	fmt.Println(serverAddr, serverPort)
+
+	rdb = redis.NewClient(&redis.Options{
+		Addr: fmt.Sprintf("%s:%d", redisAddr, redisPort),
+		DB:   int(dbIndex),
+	})
+
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe("192.168.0.101:7000", nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", serverAddr, serverPort), nil))
 }
