@@ -10,8 +10,8 @@ config = toml.loads(
 
 app = Flask(__name__)
 r = redis.Redis(
-    host=config["servers"]["redis_address"],
-    port=config["servers"]["redis_port"]
+    host=config["redis"]["address"],
+    port=config["redis"]["port"]
 )
 
 
@@ -83,7 +83,7 @@ def viewList():
 
 if __name__ == '__main__':
     app.run(
-        host=config["servers"]["server_address"],
-        port=config["servers"]["flask_server_port"],
+        host=config["servers"]["website"]["address"],
+        port=config["servers"]["website"]["port"],
         debug=True
     )
