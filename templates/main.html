@@ -1,0 +1,46 @@
+{% extends "header.html" %}
+{% block content %}
+<form method="POST">
+    <input list="mlist" type="text" id="movie" name="movie" autocomplete="off">
+    <input type="submit" class="button button-primary" value="Add" id="addbutton">
+    <datalist id="mlist"></datalist>
+</form>
+<br>
+<div class="highlight">
+    <h3 style="text-align: center;">{{movie_today}}</h3>
+</div>
+
+<script>
+
+    present = []
+
+    function renderDatalist(response) {
+        list = JSON.parse(response).Array;
+        if (JSON.stringify(list)==JSON.stringify(present)) {
+            return;
+        }
+
+        let mlist = document.getElementById("mlist");
+        let search_box = document.getElementById("movie");
+
+        let new_mlist = document.createElement("datalist");
+
+        search_box.setAttribute("list", "")
+
+        for (let i = 0; i < list.length; i ++) {
+            let option = new Option(list[i], list[i]);
+            new_mlist.appendChild(option);
+        }
+        mlist.innerHTML = new_mlist.innerHTML;
+        
+        setTimeout(()=>{search_box.setAttribute("list", "mlist");}, 200)
+
+        present = list;
+    }
+
+    document.getElementById('movie').addEventListener("input", ()=>{
+        let search_val = document.getElementById("movie").value;
+        recommendation(search_val, renderDatalist);
+    })
+</script>
+{% endblock content %}
