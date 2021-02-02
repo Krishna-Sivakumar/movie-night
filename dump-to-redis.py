@@ -8,28 +8,11 @@ r = redis.Redis(
 
 count = 0
 with open("title.basics.movie.tsv", "r") as file:
-    '''
-    tot = 0
-    for line in file.readlines():
-        spl = line.split('	')
-        id, title = spl[0], spl[2]
-
-        to_insert = dict()
-        for i in range(len(title)):
-            to_insert[title[:i+1]] = 0
-        to_insert[f"{title}^"] = 0
-        r.zadd("zset", to_insert)
-
-        print(tot)
-        tot += 1
-
     with open("title.basics.movie.txt", "w+") as file1:
         for line in file.readlines():
             spl = line.split('	')
             id, title, title_original = spl[0], spl[2], spl[3]
             file1.write(f"{id}	{title.lower()}	{title}	{title_original}\n")
-    '''
-    pass
 
 with open("title.basics.movie.txt", "r") as file:
     tot = 0

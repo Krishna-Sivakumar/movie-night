@@ -14,22 +14,12 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
-var arr []int = []int{1, 2, 3, 4, 5}
 var ctx = context.Background()
-var i = 0
 
 var rdb *redis.Client
 
 type myJSON struct {
 	Array []string
-}
-
-func getFoo(foo string) []string {
-	val, err := rdb.LRange(ctx, foo, 0, -1).Result()
-	if err != nil {
-		panic(err)
-	}
-	return val
 }
 
 func min(a, b int) int {
@@ -103,6 +93,8 @@ func main() {
 		Addr: fmt.Sprintf("%s:%d", redisAddr, redisPort),
 		DB:   int(dbIndex),
 	})
+
+	fmt.Printf("Server running on %s:%d...\n", serverAddr, serverPort)
 
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", serverAddr, serverPort), nil))

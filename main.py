@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import Flask, request, render_template
+import flask_login
 import redis
 import toml
 
@@ -7,18 +8,25 @@ config = toml.loads(
     open("config.toml", "r").read()
 )
 
+auth_dict = toml.loads(
+    open("auth.toml", "r").read()
+)
+
 
 app = Flask(__name__)
+app.secret_key = auth_dict["secret_key"]
 r = redis.Redis(
     host=config["redis"]["address"],
     port=config["redis"]["port"]
 )
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
 
 def update_movie_today():
     global start, movie_today, message
     now = datetime.now() - start
-    if now.days > 0:
+    if now.days >= 1:
         start = datetime.now()
         movie_today = r.srandmember('mlist', 1)
 
@@ -43,6 +51,9 @@ movie_today = []
 update_movie_today()
 
 
+autocompleteAddr = f"{config['servers']['autocomplete']['address']}:{config['servers']['autocomplete']['port']}"
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     update_movie_today()
@@ -54,6 +65,7 @@ def home():
 
     return render_template(
         'main.html',
+        addr=autocompleteAddr,
         movie_today=message
     )
 
@@ -68,6 +80,7 @@ def modify():
     mlist = [s.decode() for s in r.smembers('mlist')]
     return render_template(
         'modify.html',
+        addr=autocompleteAddr,
         mlist=mlist
     )
 
@@ -77,6 +90,7 @@ def viewList():
     mlist = [s.decode() for s in r.smembers('mlist')]
     return render_template(
         'view.html',
+        addr=autocompleteAddr,
         mlist=mlist
     )
 

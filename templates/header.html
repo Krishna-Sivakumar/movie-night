@@ -19,7 +19,7 @@
                 border-radius: 1.5em;
 
                 color: #856404;
-                width: 80%;
+                width: 50%;
                 padding: 1em;
 
                 margin: auto;
@@ -100,7 +100,7 @@
                 };
                 
                 obj = {query: query}
-                xhttp.open("GET", "http://192.168.0.101:7000?"+Object.keys(obj).map(key => key + '=' + obj[key]).join('&'), true);
+                xhttp.open("GET", "http://{{addr}}?"+Object.keys(obj).map(key => key + '=' + obj[key]).join('&'), true);
                 let timeStart=performance.now();
                 xhttp.send();
             }
