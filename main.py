@@ -1,7 +1,6 @@
 from datetime import datetime
 from flask import Flask, request, render_template
 import flask
-from werkzeug.utils import redirect
 import flask_login
 import hashlib
 import redis
@@ -24,7 +23,8 @@ app = Flask(__name__)
 app.secret_key = auth_dict["secret_key"]
 r = redis.Redis(
     host=config["redis"]["address"],
-    port=config["redis"]["port"]
+    port=config["redis"]["port"],
+    db=config["redis"]["mlist_index"]
 )
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -127,7 +127,7 @@ def login():
     if request.method == 'GET':
         # Return a login form here
         if flask_login.current_user.is_authenticated:
-            return redirect('/')
+            return flask.redirect('/')
         return render_template('login.html')
     elif request.method == 'POST':
         if 'username' in request.form.keys() and 'password' in request.form.keys():
@@ -135,15 +135,15 @@ def login():
                 user = user_loader(request.form["username"])
                 flask_login.login_user(user, remember=False)
 
-                return redirect('/')
-        return redirect('/login')
+                return flask.redirect('/')
+        return flask.redirect('/login')
 
 
 @app.route('/logout', methods=['GET'])
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    return redirect('/')
+    return flask.redirect('/')
 
 
 if __name__ == '__main__':

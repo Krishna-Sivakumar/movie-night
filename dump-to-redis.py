@@ -1,9 +1,14 @@
 import redis
+import toml
+
+config = toml.loads(
+    open("config.toml", "r").read()
+)
 
 r = redis.Redis(
-    host='127.0.0.1',
-    port=6000,
-    db=1
+    host=config["redis"]["address"],
+    port=config["redis"]["port"],
+    db=config["redis"]["autocomplete_index"]
 )
 
 count = 0
