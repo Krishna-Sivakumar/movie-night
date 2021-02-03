@@ -1,6 +1,8 @@
 # Movie Night
 Adds your movies to a list, and picks a random one everyday!
-There's autocomplete for movies, so no wrong spellings at the least.
+There's autocomplete for movies, so no wrong spellings at least. 
+
+I implemented autocomplete with the help of [this](http://oldblog.antirez.com/post/autocomplete-with-redis.html) article. Simple, but really effective!
 
 This project depends on Flask, Go and Redis. The servers are configured with TOML files.
 
@@ -16,28 +18,28 @@ config.toml configures the server addresses and ports, and auth.toml is for addi
 This is the format for config.toml:
 ```toml
 [redis]
-address = your_redis_server_address_here
-port = your_redis_server_address_here
-mlist_index = the_index_that_flask_uses_to_keep_track_of_the_added movies
-autocomplete_index = the_index_for_storing_autocomplete_prefixes
+address = "your_redis_server_address_here"
+port = "your_redis_server_address_here"
+mlist_index = "the_index_that_flask_uses_to_keep_track_of_the_added_movies"
+autocomplete_index = "the_index_for_storing_autocomplete_prefixes"
 
 [servers]
     [servers.autocomplete]
-    address = autocomplete_server_address
-    port = autocomplete_server_port
+    address = "autocomplete_server_address"
+    port = "autocomplete_server_port"
 
     [servers.website]
-    address = flask_server_address
-    port = flask_server_port
+    address = "flask_server_address"
+    port = "flask_server_port"
 ```
 
 And this is the format for auth.toml:
 ```toml
-secret_key = something_or_the_other
+secret_key = "something_or_the_other"
 
 [[admin]]
-    username = your_admins_username_here
-    password = sha256_hash_of_the_admins_password_here
+    username = "your_admins_username_here"
+    password = "sha256_hash_of_the_admins_password_here"
 ```
 
 <br>
@@ -97,6 +99,3 @@ python3 main.py
 ```
 ./autocomplete
 ```
-
-<br>
-<hr>
