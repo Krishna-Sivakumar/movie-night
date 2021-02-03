@@ -5,4 +5,15 @@
         {% for movie in mlist %}<tr><td>{{movie}}</td><td><input id="removebutton" type="submit" name="{{movie}}" value="Remove"></td></tr>{% endfor %}
     </table>
 </form>
+
+<style>
+    #removebutton {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        background-color: transparent;
+
+        color: rgb(94, 149, 252);
+        border: 1px rgb(94, 149, 252) solid;
+    }
+</style>
 {% endblock content %}

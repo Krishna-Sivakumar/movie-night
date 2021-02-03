@@ -1,8 +1,27 @@
 {% extends "header.html" %}
 {% block content %}
 
-    <ul>
-        {% for movie in mlist %}<li>{{movie}}</li>{% endfor %}
-    </ul>
+    <ol>
+        {% for movie in mlist %}<li><em>{{movie}}</em></li>{% endfor %}
+    </ol>
+
+    <style>
+        ol { 
+            font-style:italic;
+            font-family:Georgia, Times, serif;
+            font-weight: bold;
+            font-size:24px;
+            color:#bfe1f1;
+        }
+
+        em {
+            font-style: normal;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: normal;
+            font-size: 1.6rem;
+            color: white;
+        }
+
+    </style>
 
 {% endblock content %}

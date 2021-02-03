@@ -9,7 +9,7 @@
                 background-color: black;
                 text-align: justify;
                 margin: 5em;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-family: 'Courier New', Courier, monospace;
                 color: white;
             }
 
@@ -31,7 +31,11 @@
 
             a {
                 text-decoration: none;
-                color: white;
+                color: rgb(94, 149, 252);
+            }
+
+            a:hover {
+                color: rgb(94, 149, 252);
             }
 
             form {
@@ -41,7 +45,8 @@
             input {
                 color: black;
                 padding: .5em;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-family: 'Courier New', Courier, monospace;
+                font-weight: bold;
             }
 
             #movie {
@@ -49,9 +54,22 @@
             }
 
             #addbutton {
-                color: white;
-                background-color: #5cb85c;
+                color: #5cb85c;
+                font-weight: bold;
+                background-color: transparent;
                 border: 1px solid #5cb85c;
+            }
+
+            .linkbutton {
+                font-family: 'Courier New', Courier, monospace;
+                font-weight: bold;
+                background-color: transparent;
+
+                padding: 0.5em;
+                border-radius: 0.2em;
+
+                color: rgb(94, 149, 252);
+                border: 1px rgb(94, 149, 252) solid;
             }
 
             #removebutton {
@@ -107,8 +125,8 @@
         </script>
     </head>
     <body>
-        <h1><a href="/">Movie Night</a> 🌃 <a href="/login">🎥</a> ✨</h1>
-        <span><h3>[<a href="/view">List</a>] {% if current_user.is_authenticated %}[<a href="/modify">Modify</a>] [<a href="/logout">Logout</a>] {% endif %}</h3>
+        <h4><a href="/"><b>Movie Night</b></a> 🌃 <a href="/login">🎥</a> ✨</h4>
+        <span><h5><a class="linkbutton" href="/view">List</a> {% if current_user.is_authenticated %} <a class="linkbutton" href="/modify">Modify</a> <a class="linkbutton" href="/logout">Logout</a>{% endif %}</h5>
         </span>
         <hr>
         <br>
