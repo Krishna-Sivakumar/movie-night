@@ -1,6 +1,9 @@
 from datetime import datetime
 from flask import Flask, request, render_template
+import flask
+from werkzeug.utils import redirect
 import flask_login
+import hashlib
 import redis
 import toml
 
@@ -11,6 +14,10 @@ config = toml.loads(
 auth_dict = toml.loads(
     open("auth.toml", "r").read()
 )
+admins = auth_dict['admin']
+admin_dict = {}
+for i in admins:
+    admin_dict[i["username"]] = i
 
 
 app = Flask(__name__)
@@ -54,6 +61,20 @@ update_movie_today()
 autocompleteAddr = f"{config['servers']['autocomplete']['address']}:{config['servers']['autocomplete']['port']}"
 
 
+class User(flask_login.UserMixin):
+    pass
+
+
+@login_manager.user_loader
+def user_loader(name):
+    if name not in admin_dict.keys():
+        return
+
+    user = User()
+    user.id = name
+    return user
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     update_movie_today()
@@ -71,6 +92,7 @@ def home():
 
 
 @app.route('/modify', methods=['GET', 'POST'])
+@flask_login.login_required
 def modify():
     if len(request.form) > 0:
         for key in request.form:
@@ -93,6 +115,35 @@ def viewList():
         addr=autocompleteAddr,
         mlist=mlist
     )
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    def validate(username, password):
+        if username in admin_dict.keys() and hashlib.sha256(password.encode()).hexdigest() == admin_dict[username]["password"]:
+            return True
+        return False
+
+    if request.method == 'GET':
+        # Return a login form here
+        if flask_login.current_user.is_authenticated:
+            return redirect('/')
+        return render_template('login.html')
+    elif request.method == 'POST':
+        if 'username' in request.form.keys() and 'password' in request.form.keys():
+            if validate(request.form["username"], request.form["password"]):
+                user = user_loader(request.form["username"])
+                flask_login.login_user(user, remember=False)
+
+                return redirect('/')
+        return redirect('/login')
+
+
+@app.route('/logout', methods=['GET'])
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    return redirect('/')
 
 
 if __name__ == '__main__':
