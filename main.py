@@ -34,7 +34,7 @@ def update_movie_today():
     global start, movie_today, message
     now = datetime.now() - start
     if now.days >= 1:
-        start = datetime.now()
+        start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         movie_today = r.srandmember('mlist', 1)
 
     if len(r.smembers('mlist')) == 0:
